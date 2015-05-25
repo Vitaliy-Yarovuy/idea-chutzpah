@@ -1,0 +1,52 @@
+<idea-plugin version="2">
+  <id>com.github.vitaliyyarovuy</id>
+  <name>Chutzpah runner</name>
+  <version>0.0.1</version>
+  <vendor email="vitaliy.yxz@gmail.com" url="https://github.com/Vitaliy-Yarovuy">Vitaliy Yarovuy, Liubomur Kozak</vendor>
+
+  <description><![CDATA[
+      <h2>chutzpah runner<h2>
+      install chutzpah with chocolatey as global.<br/>
+      details: <a href="https://chocolatey.org/packages/chutzpah">https://chocolatey.org/packages/chutzpah</a><br/>
+    ]]></description>
+
+  <change-notes><![CDATA[
+      project setup
+    ]]>
+  </change-notes>
+
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="131"/>
+
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+  </project-components>
+
+  <actions>
+    <!-- Add your actions here -->
+      <action id="idea.Chutzpah.RunInTerminalAction" class="com.github.vitaliyyarovuy.RunInTerminalActionClass"
+              text="run chutzpah in browser"
+              icon="/icons/icon.png"
+              description="run chutzpah in terminal ">
+          <add-to-group group-id="EditorPopupMenu"/>
+          <add-to-group group-id="ProjectViewPopupMenu"/>
+          <add-to-group group-id="EditorTabPopupMenu"/>
+          <add-to-group group-id="ConsoleEditorPopupMenu"/>
+      </action>
+  </actions>
+
+</idea-plugin>

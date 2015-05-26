@@ -38,10 +38,19 @@
 
   <actions>
     <!-- Add your actions here -->
-      <action id="idea.Chutzpah.RunInTerminalAction" class="com.github.vitaliyyarovuy.RunInTerminalActionClass"
-              text="run chutzpah in browser"
+      <action id="idea.Chutzpah.RunTestInBrowserAction" class="com.github.vitaliyyarovuy.RunTestInBrowserActionClass"
+              text="Run chutzpah in browser"
               icon="/icons/icon.png"
-              description="run chutzpah in terminal ">
+              description="Run chutzpah in browser ">
+          <add-to-group group-id="EditorPopupMenu"/>
+          <add-to-group group-id="ProjectViewPopupMenu"/>
+          <add-to-group group-id="EditorTabPopupMenu"/>
+          <add-to-group group-id="ConsoleEditorPopupMenu"/>
+      </action>
+      <action id="idea.Chutzpah.RunAllTestFromPathAction" class="com.github.vitaliyyarovuy.RunAllTestFromPathActionClass"
+              text="Run chutzpah from path"
+              icon="/icons/icon.png"
+              description="Run chutzpah from path">
           <add-to-group group-id="EditorPopupMenu"/>
           <add-to-group group-id="ProjectViewPopupMenu"/>
           <add-to-group group-id="EditorTabPopupMenu"/>

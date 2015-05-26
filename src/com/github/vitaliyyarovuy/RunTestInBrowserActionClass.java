@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile;
 /**
  * Created by vyarovuy on 25.05.2015.
  */
-public class RunInTerminalActionClass extends AnAction {
+public class RunTestInBrowserActionClass extends AnAction {
     public void actionPerformed(AnActionEvent event) {
         // TODO: insert action logic here
         Project project = event.getData(PlatformDataKeys.PROJECT);
@@ -18,8 +18,7 @@ public class RunInTerminalActionClass extends AnAction {
         String filePath = file.getVirtualFile().getPath();
 
         ChutzpahRun runTask = new ChutzpahRun();
-        runTask.executeTask(project, filePath);
-
+        runTask.runTestInBrowser(project, filePath);
     }
 
 }

@@ -24,7 +24,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class ChutzpahRun {
 
-    public boolean executeTask(final Project project, final String filePath) {
+    final static String CHUZPAH = "chutzpah.console.exe";
+
+    private boolean executeTaskInBackground(final Project project, final String[] commands, final
+    boolean isLog) {
 
         final Semaphore targetDone = new Semaphore();
         final List<Exception> exceptions = new ArrayList<Exception>();
@@ -35,7 +38,7 @@ public class ChutzpahRun {
             public void run() {
 
                 targetDone.down();
-                new Task.Backgroundable(project, "run chutzpah.console /openInBrowser", true) {
+                new Task.Backgroundable(project, "run chutzpah.console ", true) {
 
                     public boolean shouldStartInBackground() {
                         return true;
@@ -43,15 +46,15 @@ public class ChutzpahRun {
 
                     public void run(@NotNull final ProgressIndicator indicator) {
                         try {
-                            String chuzpah = "chutzpah.console.exe";
-                            ProcessOutput output = executeAndGetOut(new String[]{chuzpah, filePath, "/openInBrowser"});
+                            ProcessOutput output = executeAndGetOut(commands);
+                            if(isLog || output.getExitCode() != 0){
+                                ExecutionHelper.showOutput(project, output, "run chutzpah.console", null, true);
+                            }
                             if (output.getExitCode() != 0) {
-                                ExecutionHelper.showOutput(project, output, "run chutzpah.console /openInBrowser", null, true);
                                 result.set(false);
                                 targetDone.up();
                                 return;
                             }
-
                             targetDone.up();
                         }
                         catch (final ExecutionException e) {
@@ -102,5 +105,12 @@ public class ChutzpahRun {
         return output;
     }
 
+    public void runTestInBrowser(final Project project, final String filePath){
+        executeTaskInBackground(project, new String[]{ ChutzpahRun.CHUZPAH, filePath, "/openInBrowser"}, false);
+    }
+
+    public void runAllTestsFromPath(final Project project, final String filePath){
+        executeTaskInBackground(project, new String[]{ ChutzpahRun.CHUZPAH, filePath}, true);
+    }
 
 }

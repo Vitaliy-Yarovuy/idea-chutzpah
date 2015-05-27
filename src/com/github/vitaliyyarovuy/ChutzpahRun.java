@@ -26,52 +26,32 @@ public class ChutzpahRun {
 
     final static String CHUZPAH = "chutzpah.console.exe";
 
-    private boolean executeTaskInBackground(final Project project, final String[] commands, final
+    private void executeTaskInBackground(final Project project, final String[] commands, final
     boolean isLog) {
 
-        final Semaphore targetDone = new Semaphore();
         final List<Exception> exceptions = new ArrayList<Exception>();
         final Ref<Boolean> result = new Ref<Boolean>(true);
 
-        ApplicationManager.getApplication().invokeAndWait(new Runnable() {
+        ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             @Override
             public void run() {
 
-                targetDone.down();
-                new Task.Backgroundable(project, "run chutzpah.console ", true) {
-
-                    public boolean shouldStartInBackground() {
-                        return true;
+                try {
+                    ProcessOutput output = executeAndGetOut(commands);
+                    if (isLog || output.getExitCode() != 0) {
+                        ExecutionHelper.showOutput(project, output, "run chutzpah.console", null, true);
                     }
-
-                    public void run(@NotNull final ProgressIndicator indicator) {
-                        try {
-                            ProcessOutput output = executeAndGetOut(commands);
-                            if(isLog || output.getExitCode() != 0){
-                                ExecutionHelper.showOutput(project, output, "run chutzpah.console", null, true);
-                            }
-                            if (output.getExitCode() != 0) {
-                                result.set(false);
-                                targetDone.up();
-                                return;
-                            }
-                            targetDone.up();
-                        }
-                        catch (final ExecutionException e) {
-                            exceptions.add(e);
-                            result.set(false);
-                            targetDone.up();
-                        }
+                    if (output.getExitCode() != 0) {
+                        result.set(false);
+                        return;
                     }
-                }.queue();
+                } catch (final ExecutionException e) {
+                    exceptions.add(e);
+                    result.set(false);
+                }
             }
-        }, ModalityState.NON_MODAL);
-        targetDone.waitFor();
-        if (!exceptions.isEmpty()) {
-            ExecutionHelper.showErrors(project, exceptions, "Cannot Init Platform", null);
-        }
-        return result.get();
 
+        });
     }
 
 

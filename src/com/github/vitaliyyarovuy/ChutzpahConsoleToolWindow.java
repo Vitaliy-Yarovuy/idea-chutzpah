@@ -33,16 +33,17 @@ public class ChutzpahConsoleToolWindow {
     private final JPanel myPanel;
     private final ToolWindow myToolWindow;
     private final ContentManager myContentManager;
+    private static ChutzpahConsoleToolWindow instance;
 
-    public ChutzpahConsoleToolWindow(@NotNull Project project) {
+    private ChutzpahConsoleToolWindow(@NotNull Project project) {
 
         myToolWindow = ToolWindowManager.getInstance(project).registerToolWindow(TOOL_WINDOW_ID,
                 true,
                 ToolWindowAnchor.BOTTOM,
                 project,
                 true);
-        //myToolWindow.setToHideOnEmptyContent(true);
-        //myToolWindow.setIcon(JsTestDriverIcons.ToolWindowTestDriver);
+        myToolWindow.setToHideOnEmptyContent(true);
+        //myToolWindow.setIcon();
         myToolWindow.setTitle("hello everyone");
         myToolWindow.setAutoHide(true);
         myToolWindow.setSplitMode(true, null);
@@ -53,13 +54,16 @@ public class ChutzpahConsoleToolWindow {
         consoleBuilder.setViewer(true);
         myConsoleView = consoleBuilder.getConsole();
 
-        //Disposer.register(parentDisposable, myConsoleView);
         myPanel = createPanel(myConsoleView);
-        myPanel.setSize(100,100);
-        //myTabInfo = new TabInfo(panel);
-        //myTabInfo.setText("Console");
     }
 
+    public static ChutzpahConsoleToolWindow getInstance(@NotNull Project project){
+        if(instance == null){
+            instance = new ChutzpahConsoleToolWindow(project);
+            instance.setAvailable(true);
+        }
+        return instance;
+    }
 
     private static JPanel createPanel(@NotNull ConsoleView consoleView){
         JPanel panel = new JPanel(new BorderLayout(0, 0));
@@ -96,6 +100,11 @@ public class ChutzpahConsoleToolWindow {
         myToolWindow.setAvailable(available, null);
     }
 
+    public void show() {
+        if (myToolWindow.isAvailable()) {
+            myToolWindow.show(null);
+        }
+    }
 
     public void attachToProcess(@NotNull OSProcessHandler processHandler) {
         processHandler.addProcessListener(new ProcessAdapter() {
@@ -106,56 +115,4 @@ public class ChutzpahConsoleToolWindow {
             }
         });
     }
-
-    /*
-
-  @NotNull
-  public TabInfo getTabInfo() {
-    return myTabInfo;
-  }
-
-  private static JPanel createContent(@NotNull ConsoleView consoleView) {
-    JPanel panel = new JPanel(new BorderLayout(0, 0));
-    JComponent consoleComponent = consoleView.getComponent();
-    panel.add(consoleComponent, BorderLayout.CENTER);
-    ActionToolbar consoleActionToolbar = createActionToolbar(consoleView);
-    consoleActionToolbar.setTargetComponent(consoleComponent);
-    panel.add(consoleActionToolbar.getComponent(), BorderLayout.WEST);
-    return panel;
-  }
-
-  @NotNull
-  private static ActionToolbar createActionToolbar(@NotNull ConsoleView consoleView) {
-    DefaultActionGroup group = new DefaultActionGroup();
-    AnAction[] actions = consoleView.createConsoleActions();
-    for (AnAction action : actions) {
-      group.add(action);
-    }
-    return ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN, group, false);
-  }
-
-  public void attachToProcess(@NotNull OSProcessHandler processHandler) {
-      processHandler.addProcessListener(new ProcessAdapter() {
-          @Override
-          public void onTextAvailable(ProcessEvent event, Key outputType) {
-              ConsoleViewContentType contentType = ConsoleViewContentType.getConsoleViewType(outputType);
-              myConsoleView.print(event.getText(), contentType);
-          }
-      });
-  }
-
-  public void showServerStartupError(@NotNull Throwable error) {
-    myConsoleView.clear();
-    StringWriter buffer = new StringWriter();
-    PrintWriter printer = new PrintWriter(buffer);
-    try {
-      error.printStackTrace(printer);
-    }
-    finally {
-      printer.close();
-    }
-    myConsoleView.print(buffer.getBuffer().toString(), ConsoleViewContentType.ERROR_OUTPUT);
-  }
-
-  9*/
 }

@@ -12,7 +12,6 @@ import com.intellij.psi.PsiFile;
  */
 public class RunAllTestFromPathActionClass extends AnAction {
     public void actionPerformed(AnActionEvent event) {
-        // TODO: insert action logic here
         Project project = event.getData(PlatformDataKeys.PROJECT);
         PsiDirectory dir = (PsiDirectory)event.getData(PlatformDataKeys.PSI_ELEMENT);
         assert dir != null;

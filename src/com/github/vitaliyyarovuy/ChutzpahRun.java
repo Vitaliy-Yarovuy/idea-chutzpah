@@ -1,7 +1,5 @@
 package com.github.vitaliyyarovuy;
 
-import com.github.vitaliyyarovuy.runner.ChutzpahConfigurationType;
-import com.github.vitaliyyarovuy.runner.ChutzpahRunConfiguration;
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.executors.DefaultRunExecutor;
@@ -50,56 +48,33 @@ public class ChutzpahRun {
         final List<Exception> exceptions = new ArrayList<Exception>();
         final Ref<Boolean> result = new Ref<Boolean>(true);
 
-        final ChutzpahConsoleToolWindow consoleToolWindow = new ChutzpahConsoleToolWindow(project);
-        consoleToolWindow.setAvailable(true);
-
+        final ChutzpahConsoleToolWindow consoleToolWindow = ChutzpahConsoleToolWindow.getInstance(project);
+        if(isLog) {
+            consoleToolWindow.show();
+        }
         ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
             @Override
             public void run() {
-
                 try {
-
-                    String tabDisplayName = "chutzpah.console run";
-
-
                     final GeneralCommandLine commandLine = new GeneralCommandLine(commands);
 
                     Process process = commandLine.createProcess();
                     commandLine.setPassParentEnvironment(true);
                     OSProcessHandler processHandler = new ColoredProcessHandler(process, commandLine.getCommandLineString(), Charsets.UTF_8);
-                    consoleToolWindow.attachToProcess(processHandler);
-                    //final ProcessOutput output = new ProcessOutput();
-//                    processHandler.addProcessListener(new ProcessAdapter() {
-//                        @Override
-//                        public void onTextAvailable(ProcessEvent event, Key outputType) {
-//                            ConsoleViewContentType contentType = ConsoleViewContentType.getConsoleViewType(outputType);
-//                            consoleView.print(event.getText(), contentType);
-//                            if (outputType == ProcessOutputTypes.STDERR) {
-//                                //output.appendStderr(event.getText());
-//                                //ExecutionHelper.showOutput(project, output, "run chutzpah.console", null, true);
-//                            }
-//                            else if (outputType != ProcessOutputTypes.SYSTEM) {
-//                                output.appendStdout(event.getText());
-//                            }
-//                        }
-//                    });
-                    processHandler.startNotify();
-                    if (processHandler.waitFor(TimeUnit.SECONDS.toMillis(12000))) {
-                        //output.setExitCode(process.exitValue());
+                    if(isLog){
+                        consoleToolWindow.attachToProcess(processHandler);
+                        processHandler.startNotify();
                     }
-                    else {
-                        processHandler.destroyProcess();
-                        //output.setTimeout();
-                    }
+                    processHandler.waitFor();
                 } catch (final ExecutionException e) {
-                    //exceptions.add(e);
-                    //result.set(false);
+                    List<ExecutionException> errors = new ArrayList<ExecutionException>();
+                    errors.add(e);
+                    ExecutionHelper.showErrors(project, errors, "chutzpah error", null );
                 }
             }
 
         });
     }
-
 
 
 

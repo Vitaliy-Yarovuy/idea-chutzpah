@@ -11,7 +11,6 @@ import com.intellij.psi.PsiFile;
  */
 public class RunTestInBrowserActionClass extends AnAction {
     public void actionPerformed(AnActionEvent event) {
-        // TODO: insert action logic here
         Project project = event.getData(PlatformDataKeys.PROJECT);
         PsiFile file = event.getData(PlatformDataKeys.PSI_FILE);
         assert file != null;

@@ -7,23 +7,19 @@ import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
-import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
+import icons.ChutzpahIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 public class ChutzpahConsoleToolWindow {
 
@@ -43,7 +39,7 @@ public class ChutzpahConsoleToolWindow {
                 project,
                 true);
         myToolWindow.setToHideOnEmptyContent(true);
-        //myToolWindow.setIcon();
+        myToolWindow.setIcon(ChutzpahIcons.SmallIcon);
         myToolWindow.setTitle("hello everyone");
         myToolWindow.setAutoHide(true);
         myToolWindow.setSplitMode(true, null);
